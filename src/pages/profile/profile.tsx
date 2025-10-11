@@ -1,61 +1,80 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  selectProfileUser,
+  updateUserProfile
+} from '../../services/slices/profileSlice';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
-  const user = {
-    name: '',
-    email: ''
-  };
+  const currentUser = useSelector(selectProfileUser);
+  const dispatch = useDispatch();
 
-  const [formValue, setFormValue] = useState({
-    name: user.name,
-    email: user.email,
+  const [formData, setFormData] = useState({
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
     password: ''
   });
 
   useEffect(() => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      name: user?.name || '',
-      email: user?.email || ''
-    }));
-  }, [user]);
+    if (currentUser) {
+      setFormData({
+        name: currentUser.name || '',
+        email: currentUser.email || '',
+        password: ''
+      });
+    }
+  }, [currentUser]);
 
-  const isFormChanged =
-    formValue.name !== user?.name ||
-    formValue.email !== user?.email ||
-    !!formValue.password;
-
-  const handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-  };
-
-  const handleCancel = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setFormValue({
-      name: user.name,
-      email: user.email,
-      password: ''
-    });
-  };
+  const hasUnsavedChanges =
+    formData.name !== (currentUser?.name || '') ||
+    formData.email !== (currentUser?.email || '') ||
+    formData.password.trim() !== '';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+
+    if (!hasUnsavedChanges) return;
+
+    const updatePayload: Partial<typeof formData> = {
+      name: formData.name,
+      email: formData.email
+    };
+
+    if (formData.password.trim()) {
+      updatePayload.password = formData.password;
+    }
+
+    dispatch(updateUserProfile(updatePayload))
+      .unwrap()
+      .then(() => {
+        setFormData((prev) => ({ ...prev, password: '' }));
+      });
+  };
+
+  const handleResetForm = (event: SyntheticEvent) => {
+    event.preventDefault();
+    if (currentUser) {
+      setFormData({
+        name: currentUser.name || '',
+        email: currentUser.email || '',
+        password: ''
+      });
+    }
   };
 
   return (
     <ProfileUI
-      formValue={formValue}
-      isFormChanged={isFormChanged}
-      handleCancel={handleCancel}
-      handleSubmit={handleSubmit}
+      formValue={formData}
+      isFormChanged={hasUnsavedChanges}
+      handleCancel={handleResetForm}
+      handleSubmit={handleFormSubmit}
       handleInputChange={handleInputChange}
     />
   );
-
-  return null;
 };

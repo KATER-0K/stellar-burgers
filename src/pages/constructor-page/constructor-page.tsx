@@ -1,15 +1,23 @@
-import { useSelector } from '../../services/store';
-
+import { useSelector, useDispatch } from '../../services/store';
+import { useEffect } from 'react';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { clearNewOrder } from '../../services/slices/orderSlice';
 import styles from './constructor-page.module.css';
-
 import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
+import { selectLoadingState as selectIngredientsLoading } from '../../services/slices/ingredientsSlice';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
-  const isIngredientsLoading = false;
+  const isIngredientsLoading = useSelector(selectIngredientsLoading);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+
+  useEffect(() => () => void dispatch(clearNewOrder()), [dispatch]);
 
   return (
     <>
