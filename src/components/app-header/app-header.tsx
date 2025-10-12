@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 import { AppHeaderUI } from '../ui/app-header';
 import { useSelector } from '../../services/store';
-
-import { selectProfileUser } from '../../services/slices/profileSlice';
+import { selectLoginUser } from '../../services/slices/loginSlice';
 
 export const AppHeader: FC = () => {
-  const currentUser = useSelector(selectProfileUser);
+  const currentUser = useSelector(selectLoginUser);
 
   return <AppHeaderUI userName={currentUser?.name || ''} />;
 };
