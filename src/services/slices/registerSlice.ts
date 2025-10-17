@@ -78,7 +78,9 @@ const registerSlice = createSlice({
       )
       .addCase(performUserRegistration.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error =
+          (action.payload as string) ||
+          'Ошибка при регистрации. Попробуйте позже.';
         state.isSuccess = false;
       });
   }

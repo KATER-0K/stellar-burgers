@@ -62,7 +62,9 @@ const loginSlice = createSlice({
       })
       .addCase(performUserLogin.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error =
+          (action.payload as string) ||
+          'Ошибка авторизации. Проверьте email и пароль.';
         state.isAuthenticated = false;
       });
   }

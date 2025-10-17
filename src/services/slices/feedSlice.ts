@@ -60,7 +60,9 @@ const feedSlice = createSlice({
       )
       .addCase(fetchFeedData.rejected, (state, action) => {
         state.isFeedLoading = false;
-        state.fetchError = action.payload as string;
+        state.fetchError =
+          (action.payload as string) ||
+          'Не удалось загрузить данные ленты заказов';
       });
   }
 });
