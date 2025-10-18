@@ -2,7 +2,7 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
-import { performUserRegistration } from '../../services/slices/registerSlice';
+import { registerUser } from '../../services/slices/registerSlice';
 import {
   selectRegistrationLoading,
   selectRegistrationError
@@ -27,7 +27,7 @@ export const Register: FC = () => {
     }
 
     dispatch(
-      performUserRegistration({
+      registerUser({
         name: userName,
         email,
         password

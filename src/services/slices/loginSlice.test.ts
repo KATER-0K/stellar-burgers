@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import loginReducer, {
-  performUserLogin,
+  loginUser,
   clearLoginError,
   resetLoginState,
   selectLoginUser,
@@ -15,9 +15,19 @@ jest.mock('../../utils/burger-api', () => ({
   loginUserApi: jest.fn()
 }));
 
+jest.mock('../../utils/cookie', () => ({
+  setCookie: jest.fn()
+}));
+
 const mockUser: TUser = {
   email: 'test@example.com',
   name: 'Test User'
+};
+
+const mockLoginResponse = {
+  user: mockUser,
+  accessToken: 'fake-access-token',
+  refreshToken: 'fake-refresh-token'
 };
 
 describe('loginSlice', () => {
@@ -51,20 +61,20 @@ describe('loginSlice', () => {
     expect(result).toEqual(initialState);
   });
 
-  describe('performUserLogin async thunk', () => {
+  describe('loginUser async thunk', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
 
     it('should dispatch pending and fulfilled actions on success', async () => {
-      (loginUserApi as jest.Mock).mockResolvedValue({ user: mockUser });
+      (loginUserApi as jest.Mock).mockResolvedValue(mockLoginResponse);
 
       const store = configureStore({
         reducer: { login: loginReducer }
       });
 
       await store.dispatch(
-        performUserLogin({ email: 'test@example.com', password: '123456' })
+        loginUser({ email: 'test@example.com', password: '123456' })
       );
 
       const state = store.getState().login;
@@ -83,7 +93,7 @@ describe('loginSlice', () => {
       });
 
       await store.dispatch(
-        performUserLogin({ email: 'bad@example.com', password: 'wrong' })
+        loginUser({ email: 'bad@example.com', password: 'wrong' })
       );
 
       const state = store.getState().login;

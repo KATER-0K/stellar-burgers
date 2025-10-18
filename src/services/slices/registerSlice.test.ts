@@ -1,5 +1,5 @@
 import reducer, {
-  performUserRegistration,
+  registerUser,
   clearRegistrationError,
   resetRegistrationState
 } from './registerSlice';
@@ -24,7 +24,6 @@ const mockUser: TUser = {
 };
 
 const mockRegisterResponse = {
-  success: true,
   user: mockUser,
   accessToken: 'fake-access-token',
   refreshToken: 'fake-refresh-token'
@@ -44,7 +43,7 @@ describe('registerSlice — регистрация пользователя', ()
   });
 
   it('Должен установить isLoading в true и сбросить ошибку и флаг успеха при начале регистрации', () => {
-    const action = performUserRegistration.pending('', {
+    const action = registerUser.pending('', {
       email: 'test@test.com',
       password: '123456',
       name: 'Тест'
@@ -56,7 +55,7 @@ describe('registerSlice — регистрация пользователя', ()
   });
 
   it('Должен сохранить данные пользователя, установить флаг успеха и сохранить токены при успешной регистрации', () => {
-    const action = performUserRegistration.fulfilled(mockRegisterResponse, '', {
+    const action = registerUser.fulfilled(mockRegisterResponse, '', {
       email: 'test@test.com',
       password: '123456',
       name: 'Тест'
@@ -80,7 +79,7 @@ describe('registerSlice — регистрация пользователя', ()
 
   it('Должен обработать ошибку при неудачной регистрации', () => {
     const errorMessage = 'Email уже используется';
-    const action = performUserRegistration.rejected(
+    const action = registerUser.rejected(
       new Error(),
       '',
       { email: 'taken@test.com', password: '123456', name: 'Тест' },
@@ -94,7 +93,7 @@ describe('registerSlice — регистрация пользователя', ()
   });
 
   it('Должен использовать сообщение об ошибке по умолчанию, если оно не предоставлено', () => {
-    const action = performUserRegistration.rejected(
+    const action = registerUser.rejected(
       new Error(),
       '',
       { email: 'bad@test.com', password: '123', name: 'Тест' },

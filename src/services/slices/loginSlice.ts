@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { loginUserApi } from '../../utils/burger-api';
 import { TUser } from '../../utils/types';
+import { setCookie } from '../../utils/cookie';
 
 type TLoginState = {
   user: TUser | null;
@@ -16,7 +17,7 @@ const initialLoginState: TLoginState = {
   isAuthenticated: false
 };
 
-export const performUserLogin = createAsyncThunk(
+export const loginUser = createAsyncThunk(
   'auth/login',
   async (
     credentials: { email: string; password: string },
@@ -50,17 +51,20 @@ const loginSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(performUserLogin.pending, (state) => {
+      .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(performUserLogin.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
+
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
+        setCookie('accessToken', action.payload.accessToken);
       })
-      .addCase(performUserLogin.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           (action.payload as string) ||

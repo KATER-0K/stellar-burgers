@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '../../utils/types';
 import { registerUserApi } from '../../utils/burger-api';
 import { setCookie } from '../../utils/cookie';
@@ -24,7 +24,7 @@ const initialRegisterState: TRegisterState = {
   isSuccess: false
 };
 
-export const performUserRegistration = createAsyncThunk<
+export const registerUser = createAsyncThunk<
   TRegisterApiResponse,
   { email: string; password: string; name: string },
   { rejectValue: string }
@@ -60,23 +60,20 @@ const registerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(performUserRegistration.pending, (state) => {
+      .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
         state.isSuccess = false;
       })
-      .addCase(
-        performUserRegistration.fulfilled,
-        (state, action: PayloadAction<TRegisterApiResponse>) => {
-          state.isLoading = false;
-          state.user = action.payload.user;
-          state.isSuccess = true;
-          state.error = null;
-          localStorage.setItem('refreshToken', action.payload.refreshToken);
-          setCookie('accessToken', action.payload.accessToken);
-        }
-      )
-      .addCase(performUserRegistration.rejected, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.isSuccess = true;
+        state.error = null;
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
+        setCookie('accessToken', action.payload.accessToken);
+      })
+      .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           (action.payload as string) ||
