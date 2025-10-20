@@ -7,6 +7,7 @@ import {
   selectRegistrationLoading,
   selectRegistrationError
 } from '../../services/slices/registerSlice';
+import { fetchUserProfile } from '../../services/slices/profileSlice';
 import { Preloader } from '@ui';
 
 export const Register: FC = () => {
@@ -35,7 +36,8 @@ export const Register: FC = () => {
     )
       .unwrap()
       .then(() => {
-        navigate('/', { replace: true });
+        dispatch(fetchUserProfile());
+        navigate('/profile', { replace: true });
       })
       .catch(() => {});
   };

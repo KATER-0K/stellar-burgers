@@ -1,7 +1,8 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { loginUser } from '../../services/slices/loginSlice';
+import { fetchUserProfile } from '../../services/slices/profileSlice';
 import { LoginUI } from '@ui-pages';
 
 export const Login: FC = () => {
@@ -9,6 +10,8 @@ export const Login: FC = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/';
 
   const error = useSelector((state) => state.login.error);
 
@@ -17,7 +20,8 @@ export const Login: FC = () => {
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then(() => {
-        navigate('/', { replace: true });
+        dispatch(fetchUserProfile());
+        navigate(from, { replace: true });
       })
       .catch(() => {});
   };

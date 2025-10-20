@@ -6,7 +6,6 @@ describe('Проверка работы конструктора бургеро�
 
     cy.window().then((win) => {
       win.localStorage.setItem('accessToken', 'test-access-token');
-      win.localStorage.setItem('refreshToken', 'test-refresh-token');
     });
 
     cy.visit('/');
