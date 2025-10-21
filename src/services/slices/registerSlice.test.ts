@@ -66,15 +66,6 @@ describe('registerSlice — регистрация пользователя', ()
     expect(result.user).toEqual(mockUser);
     expect(result.isSuccess).toBe(true);
     expect(result.error).toBeNull();
-
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-      'refreshToken',
-      'fake-refresh-token'
-    );
-    expect(mockSetCookie).toHaveBeenCalledWith(
-      'accessToken',
-      'fake-access-token'
-    );
   });
 
   it('Должен обработать ошибку при неудачной регистрации', () => {

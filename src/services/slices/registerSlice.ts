@@ -4,6 +4,11 @@ import { registerUserApi } from '../../utils/burger-api';
 import { setCookie } from '../../utils/cookie';
 import type { RootState } from '../store';
 
+const saveAuthTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('refreshToken', refreshToken);
+  setCookie('accessToken', accessToken);
+};
+
 type TRegisterApiResponse = {
   user: TUser;
   accessToken: string;
@@ -41,6 +46,9 @@ export const registerUser = createAsyncThunk<
         'Регистрация не удалась: некорректный ответ сервера'
       );
     }
+
+    saveAuthTokens(response.accessToken, response.refreshToken);
+
     return response;
   } catch (error: any) {
     return rejectWithValue(
@@ -70,8 +78,6 @@ const registerSlice = createSlice({
         state.user = action.payload.user;
         state.isSuccess = true;
         state.error = null;
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-        setCookie('accessToken', action.payload.accessToken);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

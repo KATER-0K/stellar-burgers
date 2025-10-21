@@ -3,6 +3,11 @@ import { loginUserApi } from '../../utils/burger-api';
 import { TUser } from '../../utils/types';
 import { setCookie } from '../../utils/cookie';
 
+const saveAuthTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('refreshToken', refreshToken);
+  setCookie('accessToken', accessToken);
+};
+
 type TLoginState = {
   user: TUser | null;
   isLoading: boolean;
@@ -25,6 +30,9 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const response = await loginUserApi(credentials);
+
+      saveAuthTokens(response.accessToken, response.refreshToken);
+
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -60,9 +68,6 @@ const loginSlice = createSlice({
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
-
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-        setCookie('accessToken', action.payload.accessToken);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;

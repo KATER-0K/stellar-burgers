@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.35% </span>
+                <span class="strong">73.78% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>76/97</span>
+                <span class='fraction'>76/103</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/7</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.35% </span>
+                <span class="strong">73.78% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>76/97</span>
+                <span class='fraction'>76/103</span>
             </div>
         
             
@@ -160,11 +160,22 @@
 <a name='L95'></a><a href='#L95'>95</a>
 <a name='L96'></a><a href='#L96'>96</a>
 <a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -209,8 +220,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -263,6 +275,11 @@ import { registerUserApi } from '../../utils/burger-api';
 import { setCookie } from '../../utils/cookie';
 import type { RootState } from '../store';
 &nbsp;
+const saveAuthTokens = <span class="fstat-no" title="function not covered" >(accessToken: string, refreshToken: string) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  localStorage.setItem('refreshToken', refreshToken);</span>
+<span class="cstat-no" title="statement not covered" >  setCookie('accessToken', accessToken);</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+&nbsp;
 type TRegisterApiResponse = {
   user: TUser;
   accessToken: string;
@@ -300,6 +317,9 @@ export const registerUser = createAsyncThunk&lt;
 <span class="cstat-no" title="statement not covered" >        'Регистрация не удалась: некорректный ответ сервера'</span>
 <span class="cstat-no" title="statement not covered" >      );</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    saveAuthTokens(response.accessToken, response.refreshToken);</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    return response;</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error: any) {</span>
 <span class="cstat-no" title="statement not covered" >    return rejectWithValue(</span>
@@ -329,8 +349,6 @@ const registerSlice = createSlice({
         state.user = action.payload.user;
         state.isSuccess = true;
         state.error = null;
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-        setCookie('accessToken', action.payload.accessToken);
       })
       .addCase(registerUser.rejected, (state, action) =&gt; {
         state.isLoading = false;
@@ -361,7 +379,7 @@ export default registerSlice.reducer;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-20T19:21:54.900Z
+                at 2025-10-21T16:40:08.599Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
